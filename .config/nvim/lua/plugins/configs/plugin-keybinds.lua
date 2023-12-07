@@ -82,16 +82,23 @@ end)
 
 -- Telescope
 local builtin = require 'telescope.builtin'
-map('n', '<leader>ff', function()
-  require("telescope.builtin").find_files { path_display = { "truncate" } }
+--[[ map('n', '<leader>ff', function() require("telescope.builtin").find_files { path_display = { "truncate" } }
 end, { desc = "Find Files" })
 map('n', '<leader>fb', function()
   require("telescope.builtin").buffers { path_display = { "truncate" } }
 end, { desc = "Buffers" })
-map('n', '<leader>fh', builtin.help_tags, { desc = "Help Tags" })
+map('n', '<leader>fh', builtin.help_tags, { desc = "Help Tags" }) ]]
 map('n', '<leader><space>', builtin.git_files, { desc = "List Git Files" })
 map("n", "<leader>km", ":Telescope keymaps<CR>", { desc = "Telescope Keymaps" })
-map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { silent = true, desc = "Telescope old files" })
+--[[ map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { silent = true, desc = "Telescope old files" }) ]]
+
+local tp = require'plugins.telescopePickers'
+map('n', '<leader>ff', function () tp.prettyFilesPicker({picker = 'find_files'}) end)
+-- map('n', '<leader><space>', function () tp.prettyFilesPicker({picker = 'find_files'}) end)
+map('n', '<leader>fg', function () tp.prettyGrepPicker({picker = 'live_grep'}) end)
+map('n', '<C-n>', function () tp.prettyBufferPicker({picker = 'buffers'}) end)
+
+
 -- Live grep stuff
 vim.api.nvim_set_keymap("n", "<leader>fg", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
   { desc = "Live Grep" })

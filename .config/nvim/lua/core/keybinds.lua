@@ -75,3 +75,5 @@ map("n", "<leader>gfr",function ()
   --print(commandString)
   vim.fn.system(commandString)
 end ,{desc="Find and replace whole project"})
+
+-- Telescope formatting

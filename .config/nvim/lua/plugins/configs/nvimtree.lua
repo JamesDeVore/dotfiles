@@ -13,7 +13,7 @@ nvim_tree.setup {
   enable = true
  },
  view = {
-  width = 30,
+  width = 50,
   auto_resize = false
  },
  diagnostics = {

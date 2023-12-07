@@ -114,6 +114,7 @@ font:
     #   - (macOS) Menlo
     #   - (Linux/BSD) monospace
     #   - (Windows) Consolas
+    #family: Cousine Nerd Font
     family: Cousine Nerd Font
 
     style: Regular
@@ -713,6 +714,8 @@ theme: Erebus
 # If the same trigger is assigned to multiple actions, all of them are executed
 # in the order they were defined in.
 #key_bindings:
+key_bindings:
+  - {key: Back, mods: Alt, chars: "\x17"}
 #- { key: Paste,                                       action: Paste          }
 #- { key: Copy,                                        action: Copy           }
 #- { key: L,         mods: Control,                    action: ClearLogNotice }

@@ -64,6 +64,18 @@ local plugins = {
 	},
 
 	{
+		"microsoft/vscode-js-debug",
+		build = "npm install --legacy-peer-deps && npx gulp vsDebugServerBundle && mv dist out"
+	},
+
+	{
+		"mxsdev/nvim-dap-vscode-js",
+		config = function()
+			require('plugins.configs.nvim-dap-vscode-js')
+		end
+	},
+
+	{
 		"mfussenegger/nvim-dap",
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
