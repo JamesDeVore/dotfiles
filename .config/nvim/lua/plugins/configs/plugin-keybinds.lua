@@ -7,7 +7,7 @@ local map = vim.api.nvim_set_keymap
 wk.register({
   ["<leader>"] = {
     c = {
-      i = { function() vim.lsp.buf.format() end, "Format" }
+      f = { function() vim.lsp.buf.format() end, "Format" }
     },
   }
 })
