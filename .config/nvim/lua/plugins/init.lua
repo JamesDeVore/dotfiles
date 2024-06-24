@@ -79,6 +79,7 @@ local plugins = {
 		"mfussenegger/nvim-dap",
 		dependencies = {
 			"rcarriga/nvim-dap-ui",
+			"nvim-neotest/nvim-nio"
 		},
 		config = function()
 			require('plugins.configs.dap')
@@ -211,14 +212,6 @@ local plugins = {
 	},
 
 	{
-		"anuvyklack/hydra.nvim",
-		config = function()
-			--require'plugins.configs.hydra'
-		end,
-	},
-
-
-	{
 		"sindrets/diffview.nvim",
 		config = function()
 			require("plugins.configs.diffview")
@@ -292,8 +285,7 @@ local plugins = {
 		end,
 	},
 	"gioele/vim-autoswap",
-	"kdheepak/lazygit.nvim",
-	{ "iamcco/markdown-preview.nvim", build = "cd app && yarn install" }
+	"kdheepak/lazygit.nvim"
 }
 
 local opts = {}

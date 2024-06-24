@@ -65,15 +65,11 @@ local neodev = {
   },
 }
 
-require 'mason'.setup {
-  providers = {
-    php = {
-      command = 'php',
-      args = { '-dxdebug.mode=debug', '-dxdebug.start_with_request=yes', '-dxdebug.client_port=9003' },
-    },
-  },
-}
-
+require('mason').setup({
+    command = 'phpcbf',
+    args = {'--standard=~/code/muiq1-web-app/.phpcs.xml', '--indent=spaces'},
+    filetypes = {'php'},
+})
 require("mason-lspconfig").setup_handlers {
   function(server_name)
     lspconfig[server_name].setup { on_attach = on_attach, capabilities = capabilities }

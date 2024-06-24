@@ -3,7 +3,6 @@ local lspconfig = require('lspconfig')
 lspconfig.intelephense.setup {}
 lspconfig.cssls.setup {}
 lspconfig.dockerls.setup {}
-lspconfig.emmetls.setup {}
 lspconfig.eslint.setup {}
 -- lspconfig.tsserver.setup {}
 lspconfig.html.setup {}

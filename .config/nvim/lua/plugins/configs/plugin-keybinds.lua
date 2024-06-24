@@ -1,112 +1,132 @@
 local wk = require("which-key")
 local dap = require('dap')
+local opts = { noremap = true, silent = true }
+local map = vim.api.nvim_set_keymap
+
+-- Register formatting on which key
 wk.register({
   ["<leader>"] = {
     c = {
       i = { function() vim.lsp.buf.format() end, "Format" }
     },
-  },
-  {
-    ["<C-s>"] = { ":NvimTreeToggle<CR>", "Toggle File Tree" }
   }
 })
+
 -- Debugging
-map("n", "<M-b>", function() dap.toggle_breakpoint() end, { silent = true })
-map("n", "<M-t>", function()
-  -- vim.cmd("NvimTreeClose")
-  dap.continue()
-end, { silent = true, desc = "Start Session" })
-map("n", "<M-s>", function() dap.step_over() end, { silent = true, desc = "Step Over" })
-map("n", "<M-i>", function() dap.step_into() end, { silent = true, desc = "Step Into" })
-map("n", "<M-u>", function() dap.step_out() end, { silent = true, desc = "Step Out" })
-map("n", "<M-c>", function() dap.continue() end, { silent = true, desc = "Continue" })
-map("n", "<M-f>", function() dap.run_to_cursor() end, { silent = true, desc = "Run to cursor" })
-map("n", "<M-r>", function() dap.restart() end, { silent = true, desc = "Restart" })
-map("n", "<M-a>", function() dap.list_breakpoints() end, { silent = true, desc = "List Breakpoints" })
-map("n", "<M-d>", function()
-  require('dap').clear_breakpoints()
-end, { silent = true, desc = "Clear Breakpoints" })
-map("n", "<M-q>", function()
-  require('dap').close()
-  require('dapui').close()
-end, { silent = true, desc = "Quit Debugger" })
+local dap_mappings = {
+  ["<M-b>"] = { function() dap.toggle_breakpoint() end, "Toggle Breakpoint" },
+  ["<M-t>"] = { function() dap.continue() end, "Start Session" },
+  ["<M-s>"] = { function() dap.step_over() end, "Step Over" },
+  ["<M-i>"] = { function() dap.step_into() end, "Step Into" },
+  ["<M-u>"] = { function() dap.step_out() end, "Step Out" },
+  ["<M-c>"] = { function() dap.continue() end, "Continue" },
+  ["<M-f>"] = { function() dap.run_to_cursor() end, "Run to Cursor" },
+  ["<M-r>"] = { function() dap.restart() end, "Restart" },
+  ["<M-a>"] = { function() dap.list_breakpoints() end, "List Breakpoints" },
+  ["<M-d>"] = { function() dap.clear_breakpoints() end, "Clear Breakpoints" },
+  ["<M-q>"] = { function()
+    dap.close()
+    require('dapui').close()
+  end, "Quit Debugger" },
+  ["<M-e>"] = { function()
+    vim.g.shouldCloseDapWins = 0
+    require('dapui').eval()
+  end, "Evaluate" },
+  ["<M-v>"] = { "<cmd>:DapVirtualTextForceRefresh<cr>", "Refresh Virtual Text" }
+}
 
-
-map("n", "<M-e>", function()
-  vim.g.shouldCloseDapWins = 0
-  require('dapui').eval()
+for key, mapping in pairs(dap_mappings) do
+  if type(mapping[1]) == "function" then
+    vim.keymap.set("n", key, mapping[1], { silent = true, desc = mapping[2] })
+  else
+    map("n", key, mapping[1], { silent = true, desc = mapping[2] })
+  end
 end
-, { silent = true, desc = "Evaluate" })
 
-map("n", "<M-v>", "<cmd>:DapVirtualTextForceRefresh<cr>", { silent = true, desc = "Refresh Virtual Text" })
---map("n", "<M-t>", function() require('dapui').elements.scopes.open() end, { silent = true, desc = "" })
--- Comment
-map("n", "<C-_>", ":lua require('Comment.api').toggle()<cr>")
-map("x", "<C-_>", ":lua require('Comment.api').gc(vim.fn.visualmode())<cr>") -- Line Comment
+-- Comments
+map("n", "<C-_>", ":lua require('Comment.api').toggle()<cr>", opts)
+map("x", "<C-_>", ":lua require('Comment.api').gc(vim.fn.visualmode())<cr>", opts)
 
+-- Neogen
+map("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
 
---DAP ui
--- sets the variable back to close
+-- Nvim Tree
+local nvim_tree_mappings = {
+  ["<C-s>"] = ":NvimTreeToggle<CR>",
+  ["<leader>t"] = { ":NvimTreeFocus<CR>", "Focus File Tree" },
+  ["<C-c>"] = ":NvimTreeCollapse<CR>"
+}
+
+for key, mapping in pairs(nvim_tree_mappings) do
+  if type(mapping) == "table" then
+    map("n", key, mapping[1], { silent = true, desc = mapping[2] })
+  else
+    map("n", key, mapping, opts)
+  end
+end
+
+-- Phpactor
+local phpactor_mappings = {
+  ["<leader>cp"] = function()
+    local filePath = vim.fn.expand('%')
+    local commands = {
+      "phpactor class:transform " .. filePath .. " --transform=add_missing_docblocks_return",
+      "phpactor class:transform " .. filePath .. " --transform=add_missing_params",
+      "phpactor class:transform " .. filePath .. " --transform=add_missing_return_types"
+    }
+    for _, cmd in ipairs(commands) do
+      vim.fn.system(cmd)
+    end
+    vim.cmd("e")
+  end,
+  ["<leader>cc"] = function()
+    local filePath = vim.fn.expand('%')
+    local commands = {
+      "phpactor class:transform " .. filePath .. " --transform=complete_constructor",
+      "phpactor class:transform " .. filePath .. " --transform=implement_contracts"
+    }
+    for _, cmd in ipairs(commands) do
+      vim.fn.system(cmd)
+    end
+    vim.cmd("e")
+  end
+}
+
+for key, func in pairs(phpactor_mappings) do
+  vim.keymap.set("n", key, func, opts)
+end
+
+-- Telescope
+local telescope = require('telescope.builtin')
+local tp = require('plugins.telescopePickers')
+local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
+
+local telescope_mappings = {
+  ["<leader><space>"] = { telescope.git_files, "List Git Files" },
+  ["<leader>km"] = { ":Telescope keymaps<CR>", "Keymaps" },
+  ["<leader>fr"] = { "<cmd>Telescope oldfiles<cr>", "Old Files" },
+  ["<leader>ff"] = { function() tp.prettyFilesPicker({ picker = 'find_files' }) end, "Find Files" },
+  ["<leader>fg"] = { function() tp.prettyGrepPicker({ picker = 'live_grep' }) end, "Live Grep" },
+  ["<C-n>"] = { function() tp.prettyBufferPicker({ picker = 'buffers' }) end, "Buffers" },
+  ["<leader>fg"] = { ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>", "Live Grep Args" },
+  ["<leader>o"] = { ":Telescope file_browser path=%:p:h cwd_to_path=true<CR>", "File Browser" },
+  ["<leader>gc"] = { live_grep_args_shortcuts.grep_word_under_cursor, "Grep Word Under Cursor" },
+  ["<leader>gv"] = { live_grep_args_shortcuts.grep_visual_selection, "Grep Selection" }
+}
+
+for key, mapping in pairs(telescope_mappings) do
+  if type(mapping[1]) == "function" then
+    vim.keymap.set("n", key, mapping[1], { desc = mapping[2] })
+  else
+    map("n", key, mapping[1], { noremap = true, silent = true, desc = mapping[2] })
+  end
+end
+
+require("telescope").load_extension("file_browser")
+
+-- Close Dap Wins
 function CloseDapWins()
   vim.g.shouldCloseDapWins = 1
   return ''
 end
 
--- neogen
-local opts = { noremap = true, silent = true }
-vim.api.nvim_set_keymap("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
--- Nvim tree
-local nvim_tree = require 'nvim-tree'
-map("n", "<C-s>", ":NvimTreeToggle<CR>")
-map("n", "<leader>t", function() nvim_tree.focus() end, { desc = 'Focus File Tree' })
-
--- Phpactor
-map("n", "<leader>cp", function(buf)
-  local filePath = vim.fn.expand('%')
-  local returnDocCommand = "phpactor class:transform " .. filePath .. " --transform=add_missing_docblocks_return"
-  local paramsCommand = "phpactor class:transform " .. filePath .. " --transform=add_missing_params"
-  local returnCommand = "phpactor class:transform " .. filePath .. " --transform=add_missing_return_types"
-  vim.fn.system(returnCommand)
-  vim.fn.system(paramsCommand)
-  vim.fn.system(returnDocCommand)
-  vim.cmd("e")
-end)
-map("n", "<leader>cc", function(buf)
-  local filePath = vim.fn.expand('%')
-  local returnDocCommand = "phpactor class:transform " .. filePath .. " --transform=complete_constructor"
-  local paramsCommand = "phpactor class:transform " .. filePath .. " --transform=implement_contracts"
-  vim.fn.system(paramsCommand)
-  vim.fn.system(returnDocCommand)
-  vim.cmd("e")
-end)
-
--- Telescope
-local builtin = require 'telescope.builtin'
---[[ map('n', '<leader>ff', function() require("telescope.builtin").find_files { path_display = { "truncate" } }
-end, { desc = "Find Files" })
-map('n', '<leader>fb', function()
-  require("telescope.builtin").buffers { path_display = { "truncate" } }
-end, { desc = "Buffers" })
-map('n', '<leader>fh', builtin.help_tags, { desc = "Help Tags" }) ]]
-map('n', '<leader><space>', builtin.git_files, { desc = "List Git Files" })
-map("n", "<leader>km", ":Telescope keymaps<CR>", { desc = "Telescope Keymaps" })
---[[ map("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>", { silent = true, desc = "Telescope old files" }) ]]
-
-local tp = require'plugins.telescopePickers'
-map('n', '<leader>ff', function () tp.prettyFilesPicker({picker = 'find_files'}) end)
--- map('n', '<leader><space>', function () tp.prettyFilesPicker({picker = 'find_files'}) end)
-map('n', '<leader>fg', function () tp.prettyGrepPicker({picker = 'live_grep'}) end)
-map('n', '<C-n>', function () tp.prettyBufferPicker({picker = 'buffers'}) end)
-
-
--- Live grep stuff
-vim.api.nvim_set_keymap("n", "<leader>fg", ":lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>",
-  { desc = "Live Grep" })
--- map("n", "<leader>t", ":Telescope file_browser<CR>", { silent = true })
-map("n", "<leader>o", ":Telescope file_browser path=%:p:h cwd_to_path=true<CR>", { silent = true })
-map("n", "<C-n>", [[<Cmd>lua require('telescope.builtin').buffers()<CR>]], { noremap = true, silent = true })
-
-local live_grep_args_shortcuts = require("telescope-live-grep-args.shortcuts")
-map("n", "<leader>gc", live_grep_args_shortcuts.grep_word_under_cursor, { desc = "Grep word under cursor" })
-map("v", "<leader>gv", live_grep_args_shortcuts.grep_visual_selection, { desc = "Grep Selection" })
-require("telescope").load_extension "file_browser"

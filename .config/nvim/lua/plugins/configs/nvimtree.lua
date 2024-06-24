@@ -2,7 +2,6 @@ local nvim_tree = require 'nvim-tree'
 
 map("n", "<C-s>", ":NvimTreeToggle<CR>")
 map("n", "<C-c>", ":NvimTreeCollapse<CR>")
-map("n", "<leader>t", function() nvim_tree.focus() end, { desc = 'Focus File Tree' })
 
 nvim_tree.setup {
  git = {
@@ -14,7 +13,6 @@ nvim_tree.setup {
  },
  view = {
   width = 50,
-  auto_resize = false
  },
  diagnostics = {
   enable = true
