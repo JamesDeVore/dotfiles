@@ -6,7 +6,7 @@ sudo apt update
 sudo apt install build-essential clang git alacritty neovim nodejs wget
 
 # make some config dirs
-mkdir -pr ~.config/nvim ~.config/alacritty
+mkdir -p ~.config/nvim ~.config/alacritty
 
 # clone down dotfiles
 git clone https://github.com/JamesDeVore/dotfiles.git 
