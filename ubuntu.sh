@@ -2,7 +2,7 @@
 
 cd ~
 # make some config dirs
-mkdir -p ~/.config/nvim ~/.config/alacritty
+mkdir -p .config .config/nvim ~/.config/alacritty
 
 # install all the things
 sudo apt update
