@@ -16,6 +16,7 @@ cd ~/dotfiles/.config
 
 stow nvim -t ~/.config/nvim
 stow alacritty -t ~/.config/alacritty/
+cd ~
 
 # Download the Cousine Nerd Font
 wget https://github.com/ryanoasis/nerd-fonts/releases/latest/download/Cousine.zip -O Cousine.zip
