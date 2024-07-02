@@ -3,7 +3,7 @@
 # install all the things
 
 sudo apt update
-sudo apt install build-essential clang git alacritty neovim node wget
+sudo apt install build-essential clang git alacritty neovim nodejs wget
 
 # make some config dirs
 mkdir -pr ~.config/nvim ~.config/alacritty
