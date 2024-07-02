@@ -10,10 +10,10 @@ sudo apt update
 sudo apt install build-essential clang git stow alacritty neovim nodejs wget
 
 # clone down dotfiles
-git clone https://github.com/JamesDeVore/dotfiles.git ~/dotfiles
+git clone https://github.com/JamesDeVore/dotfiles.git
 
 # start the stow process
-cd ~/dotfiles/.config
+cd dotfiles/.config
 
 stow nvim -t ~/.config/nvim
 stow alacritty -t ~/.config/alacritty/
