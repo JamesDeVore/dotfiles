@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # make some config dirs
-mkdir -p ~.config/nvim ~.config/alacritty
+mkdir -p ~/.config/nvim ~/.config/alacritty
 
 # install all the things
 
