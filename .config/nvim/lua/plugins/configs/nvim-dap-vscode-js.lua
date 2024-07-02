@@ -23,14 +23,6 @@ for _, language in ipairs({ "typescript", "javascript" }) do
     name = "Attach",
     processId = require'dap.utils'.pick_process,
     cwd = "${workspaceFolder}",
-  },
-  {
-    type = "pwa-node",
-    request = "launch",
-    name = "Launch export webpack file",
-    program = "/home/james/code/muiq1-web-app/backend/public/js/data-analysis-export.js",
-    cwd = "${workspaceFolder}",
-    args = "tmp/muiqwebapp/DataExport/869859/DataIn/export.json"
   }
-}
+  }
 end

@@ -65,29 +65,14 @@ local neodev = {
   },
 }
 
-require('mason').setup({
-  command = 'phpcbf',
-  args = { '--standard=~/code/muiq1-web-app/.phpcs.xml', '--indent=spaces' },
-  filetypes = { 'php' },
-})
-
-local phpcbf_config_path = "~/code/muiq1-web-app/.phpcs.xml"
-
--- Function to format using phpcbf
-local function format_phpcbf()
-  local buf = vim.api.nvim_get_current_buf()
-  local filepath = vim.api.nvim_buf_get_name(buf)
-  local cmd = string.format("phpcbf --standard=%s %s", phpcbf_config_path, filepath)
-  vim.fn.system(cmd)
-  vim.cmd("edit")
-end
-
--- Optional: Keymap to format manually
-map('n', '<leader>ci', function()
-  vim.lsp.buf.format()
-  vim.cmd("write")
-  format_phpcbf()
-end, { noremap = true, silent = true })
+require 'mason'.setup {
+  providers = {
+    php = {
+      command = 'php',
+      args = { '-dxdebug.mode=debug', '-dxdebug.start_with_request=yes', '-dxdebug.client_port=9003' },
+    },
+  },
+}
 
 require("mason-lspconfig").setup_handlers {
   function(server_name)
