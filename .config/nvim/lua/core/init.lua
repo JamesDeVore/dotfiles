@@ -42,3 +42,4 @@ vim.api.nvim_set_hl(0, 'Search', { bg = '#698a81' })
 -- vim.cmd("set listchars=tab:▸\\ ,eol:¬")
 vim.cmd([[set listchars=tab:..]])
 vim.cmd([[au TextYankPost * silent! lua vim.highlight.on_yank()]])
+

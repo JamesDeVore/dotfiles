@@ -115,6 +115,17 @@ local plugins = {
 			require("plugins.configs.nvimtree")
 		end,
 	},
+
+	-- {
+	-- 	'stevearc/oil.nvim',
+	-- 	opts = {},
+	-- 	-- Optional dependencies
+	-- 	dependencies = { { "echasnovski/mini.icons", opts = {} } },
+	-- 	-- dependencies = { "nvim-tree/nvim-web-devicons" }, -- use if prefer nvim-web-devicons
+	-- 	config = function()
+	-- 		require('plugins.configs.oil')
+	-- 	end
+	-- },
 	{
 		"nvim-telescope/telescope-file-browser.nvim",
 		dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
@@ -214,7 +225,7 @@ local plugins = {
 	{
 		"sindrets/diffview.nvim",
 		config = function()
-			require("plugins.configs.diffview")
+			-- require("plugins.configs.diffview")
 		end,
 	},
 
@@ -276,16 +287,59 @@ local plugins = {
 			"rcarriga/nvim-notify",
 		}
 	},
+	-- {
+	-- 	"folke/which-key.nvim",
+	-- 	config = function()
+	-- 		vim.o.timeout = true
+	-- 		vim.o.timeoutlen = 800
+	-- 		require("plugins.configs.which-key")
+	-- 	end,
+	-- },
+	"gioele/vim-autoswap",
+	"kdheepak/lazygit.nvim",
+
 	{
-		"folke/which-key.nvim",
+		"jay-babu/mason-null-ls.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		dependencies = {
+			"williamboman/mason.nvim",
+			"nvimtools/none-ls.nvim",
+		},
 		config = function()
-			vim.o.timeout = true
-			vim.o.timeoutlen = 800
-			require("plugins.configs.which-key")
+			require("mason").setup()
+			require("mason-null-ls").setup({
+				ensure_installed = {},
+				automatic_installation = false,
+				handlers = {},
+			})
+			local null_ls = require('null-ls')
+			null_ls.setup {}
+			null_ls.register(null_ls.builtins.diagnostics.phpcs.with({
+				command = './vendor/bin/phpcs',
+			}))
 		end,
 	},
-	"gioele/vim-autoswap",
-	"kdheepak/lazygit.nvim"
+	{
+		"jay-babu/mason-null-ls.nvim",
+		event = { "BufReadPre", "BufNewFile" },
+		dependencies = {
+			"williamboman/mason.nvim",
+			"nvimtools/none-ls.nvim",
+		},
+		config = function()
+			require("mason").setup()
+			require("mason-null-ls").setup({
+				ensure_installed = {},
+				automatic_installation = false,
+				handlers = {},
+			})
+			local null_ls = require('null-ls')
+			null_ls.setup {}
+			null_ls.register(null_ls.builtins.diagnostics.phpcs.with({
+				command = './vendor/bin/phpcs',
+			}))
+		end,
+	}
 }
 
 local opts = {}

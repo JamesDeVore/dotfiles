@@ -55,7 +55,7 @@ cmp.setup({
     -- fetching_timeout = 200,
   },
   experimental = {
-    ghost_text = true
+    ghost_text = false
   },
   formatting = {
     format = require'lspkind'.cmp_format({

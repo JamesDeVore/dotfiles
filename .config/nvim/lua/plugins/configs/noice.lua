@@ -1,111 +1,102 @@
+-- Basic setup for nvim-notify
+require("notify").setup({
+  -- Set the background color for notifications
+  -- background_colour = "#000000",
+
+  -- Minimum level of messages to show
+  level = "info",   -- Options: "trace", "debug", "info", "warn", "error"
+
+  -- Set the default timeout for notifications (in milliseconds)
+  timeout = 1000,
+
+  -- Set the stages of the animation (fade, slide, etc.)
+  stages = "static",   -- Options: "fade", "fade_in_slide_out", "static"
+
+  -- Define icons for different notification levels
+  icons = {
+    ERROR = "",
+    WARN  = "",
+    INFO  = "",
+    DEBUG = "",
+    TRACE = "✎",
+  },
+
+  -- Set the rendering style
+  render = "wrapped-compact",   -- Options: "default", "minimal"
+
+  -- Set the maximum width of notifications
+  max_width = 75,
+
+  -- Set the maximum height of notifications
+  max_height = nil,   -- Can be nil, this sets the maximum height
+})
+
+
+vim.notify = require("notify")
+
 require("noice").setup({
-  lsp = {
-    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-    override = {
-      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-      ["vim.lsp.util.stylize_markdown"] = true,
-      ["cmp.entry.get_documentation"] = true,
+  cmdline = {
+    enabled = true,
+    view = "cmdline_popup",
+    cmdline = { pattern = "^:", icon = "", lang = "vim" },
+    search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
+    search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
+    filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
+    lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
+    help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
+    input = {}, -- Used by input()
+  },
+  messages = {
+    enabled = true,
+    view = "notify",
+    opts = {
+      wrap = true, -- enables line wrapping for long messages
+      -- replace = true,
+      merge = true
     },
   },
-  -- you can enable a preset for easier configuration
-  presets = {
-    bottom_search = false,         -- use a classic bottom cmdline for search
-    command_palette = false,       -- position the cmdline and popupmenu together
-    long_message_to_split = true, -- long messages will be sent to a split
-    inc_rename = false,           -- enables an input dialog for inc-rename.nvim
-    lsp_doc_border = false,       -- add a border to hover docs and signature help
+  confirm = {
+    enabled = true,
+    view = "confirm",
+    opts = {
+      wrap = true, -- enables line wrapping for long messages
+      -- replace = true,
+      merge = true
+    },
+  },
+  lsp = {
+    progress = {
+      enabled = true,
+      view = "notify",
+    },
+    hover = {
+      enabled = true,
+      view = nil,
+    },
+    signature = {
+      enabled = true,
+      view = nil,
+    },
   },
   routes = {
     {
-      view = "notify",
-      filter = { event = "msg_showmode" },
-    },
-    {
       filter = {
-        event = "msg_show",
-        kind = "",
-        find = "written",
+        event = "lsp",
+        kind = "progress"
       },
-      opts = { skip = true },
-    },
-    {
-      view = "split",
-      filter = {
-        event="msg_show",
-        min_width = 90
-      }
-    }
-  },
-  views = {
-    cmdline_popup = {
-      border = {
-        style = "none",
-        padding = { 2, 3 },
-      },
-      filter_options = {},
-      win_options = {
-        winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
-      },
+      opts = { skip = true }
     },
   },
-  cmdline = {
-    enabled = true,         -- enables the Noice cmdline UI
-    view = "cmdline_popup", -- view for rendering the cmdline. Change to `cmdline` to get a classic cmdline at the bottom
-    opts = {},              -- global options for the cmdline. See section on views
-    ---@type table<string, CmdlineFormat>
-    format = {
-      -- conceal: (default=true) This will hide the text in the cmdline that matches the pattern.
-      -- view: (default is cmdline view)
-      -- opts: any options passed to the view
-      -- icon_hl_group: optional hl_group for the icon
-      -- title: set to anything or empty string to hide
-      cmdline = { pattern = "^:", icon = "", lang = "vim" },
-      search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
-      search_up = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
-      filter = { pattern = "^:%s*!", icon = "$", lang = "bash" },
-      lua = { pattern = { "^:%s*lua%s+", "^:%s*lua%s*=%s*", "^:%s*=%s*" }, icon = "", lang = "lua" },
-      help = { pattern = "^:%s*he?l?p?%s+", icon = "" },
-      input = {}, -- Used by input()
-      -- lua = false, -- to disable a format, set to `false`
+  popupmenu = {
+    enabled = true,  -- ensure popups are enabled
+    backend = "nui", -- use the nui backend for better handling
+    opts = {
+      wrap = true,   -- wrap text inside the popup
     },
   },
-  commands = {
-    history = {
-      -- options for the message history that you get with `:Noice`
-      view = "split",
-      opts = { enter = true, format = "details" },
-      filter = {
-        any = {
-          { event = "notify" },
-          { error = true },
-          { warning = true },
-          { event = "msg_show", kind = { "" } },
-          { event = "lsp",      kind = "message" },
-        },
-      },
-    },
-    -- :Noice last
-    last = {
-      view = "popup",
-      opts = { enter = true, format = "details" },
-      filter = {
-        any = {
-          { event = "notify" },
-          { error = true },
-          { warning = true },
-          { event = "msg_show", kind = { "" } },
-          { event = "lsp",      kind = "message" },
-        },
-      },
-      filter_opts = { count = 1 },
-    },
-    -- :Noice errors
-    errors = {
-      -- options for the message history that you get with `:Noice`
-      view = "popup",
-      opts = { enter = true, format = "details" },
-      filter = { error = true },
-      filter_opts = { reverse = true },
-    },
-  }
+  presets = {
+    bottom_search = false,
+    command_palette = false,
+    long_message_to_split = true, -- consider using a split for very long messages
+  },
 })

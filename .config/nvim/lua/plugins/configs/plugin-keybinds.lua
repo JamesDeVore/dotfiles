@@ -1,16 +1,15 @@
-local wk = require("which-key")
 local dap = require('dap')
 local opts = { noremap = true, silent = true }
 local map = vim.api.nvim_set_keymap
 
 -- Register formatting on which key
-wk.register({
-  ["<leader>"] = {
-    c = {
-      i = { function() vim.lsp.buf.format() end, "Format" }
-    },
-  }
-})
+vim.keymap.set("n", "<space>ci", function()
+  if vim.bo.filetype == "php" then
+    vim.cmd("silent! !php-cs-fixer fix --config=/home/james/code/muiq_configs/php-cs-fixer.php % --allow-risky=yes")
+  else
+    vim.lsp.buf.format()
+  end
+end, opts)
 
 -- Debugging
 local dap_mappings = {

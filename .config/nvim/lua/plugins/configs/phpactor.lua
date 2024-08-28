@@ -20,3 +20,5 @@ local paramsCommand = "phpactor class:transform " .. filePath .. " --transform=i
 end)
 
 
+vim.api.nvim_set_keymap('n', '<leader>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', { noremap = true, silent = true })
+

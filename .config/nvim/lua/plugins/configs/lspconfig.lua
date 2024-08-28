@@ -1,13 +1,4 @@
 -- Setup language servers.
-local lspconfig = require('lspconfig')
-lspconfig.intelephense.setup {}
-lspconfig.cssls.setup {}
-lspconfig.dockerls.setup {}
-lspconfig.eslint.setup {}
--- lspconfig.tsserver.setup {}
-lspconfig.html.setup {}
-lspconfig.lua_ls.setup {}
-lspconfig.rust_analyzer.setup {}
 
 
 -- Global mappings.

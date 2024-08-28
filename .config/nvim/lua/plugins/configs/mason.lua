@@ -79,6 +79,16 @@ require("mason-lspconfig").setup_handlers {
     lspconfig[server_name].setup { on_attach = on_attach, capabilities = capabilities }
   end,
   ["lua_ls"] = function()
+    local lspconfig = require('lspconfig')
+    -- lspconfig.intelephense.setup {}
+    lspconfig.phpactor.setup {}
+    lspconfig.cssls.setup {}
+    lspconfig.dockerls.setup {}
+    lspconfig.eslint.setup {}
+    -- lspconfig.tsserver.setup {}
+    lspconfig.html.setup {}
+    lspconfig.lua_ls.setup {}
+    lspconfig.rust_analyzer.setup {}
     lspconfig.lua_ls.setup(neodev)
   end,
   -- You can also override the default handler for specific servers by providing them as keys, like so:
